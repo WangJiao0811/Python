@@ -1,0 +1,120 @@
+import urllib.request
+import http.cookiejar
+import urllib.parse
+from scrapy import Selector
+
+def getcookie_str(cj):
+    cookie = ''
+    for item in cj:
+        cookie += item.name
+        cookie += '='
+        cookie += item.value
+        cookie += ';'
+    return cookie
+
+def get_http(url,data,headers,cookie):
+    res = {}
+    if data is None:
+        req = urllib.request.Request(url)
+    else:
+        data = urllib.parse.urlencode(data).encode('utf-8')
+        req = urllib.request.Request(url, data)
+    for (k, v) in headers.items():
+        req.add_header(k,v)
+    if cookie is None:
+        response = urllib.request.urlopen(req)
+        html = response.read().decode('utf-8')
+        res['html'] = html
+    else:
+        cj = http.cookiejar.CookieJar()
+        opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+        response = opener.open(req)
+        html = response.read().decode('utf-8')
+        res['html'] = html
+        res['cookie'] = getcookie_str(cj)
+    return res
+
+
+
+# 获取login的cookie以及authenticity_token
+url = "https://github.com/login"
+header  = {
+'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36'
+}
+result = get_http(url,None,header,1)
+cookie = result['cookie']
+authenticity_token = Selector(text=result['html']).xpath('//input[@name="authenticity_token"]/@value').extract()[0]
+
+# 提交登陆信息，获取登陆后的cookie
+name = input("please input name :")
+passwd = input("please input passwd :")
+url = 'https://github.com/session'
+data = {
+'commit': 'Sign in',
+'utf8' : '✓',
+'login' : name,
+'password' : passwd,
+'authenticity_token' : authenticity_token
+}
+header = {
+'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+'Cookie' : cookie
+}
+result = get_http(url,data,header,1)
+cookie = result['cookie']
+
+
+# 带上登陆后的cookie访问自己的页面
+url = 'https://github.com/WangJiao0811'
+header = {
+'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+'Cookie' : cookie
+}
+result = get_http(url,None,header,None)
+print(result['html'])
+
+file = open('WangJiao.html', 'w')
+file.writelines(result['html'])
+file.close( )
+
+
+# result = urllib.request.Request("https://github.com/login")
+# 自动记住cookie
+# cj = http.cookiejar.CookieJar()
+# opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+# rs = opener.open(result)
+# html = rs.read().decode('utf-8')
+# authenticity_token = Selector(text=html).xpath('//div/input[2]/@value').extract()[0]
+# cookie = getcookie_str(cj)
+
+
+# url = 'https://github.com/session'
+# data ={}
+# data['commit'] = 'Sign in'
+# data['utf8'] = '✓'
+# data['login'] = 'WangJiao0811'
+# data['password'] = '19940811wj'
+# data['authenticity_token'] = authenticity_token
+
+# data = urllib.parse.urlencode(data).encode('utf-8')
+# req = urllib.request.Request(url,data)
+
+# req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36')
+# req.add_header('Cookie', cookie )
+
+#自动记住cookie
+# cj = http.cookiejar.CookieJar()
+# opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+# rs = opener.open(req)
+# html = rs.read().decode('utf-8')
+# cookie = getcookie_str(cj)
+
+# print(cookie)
+
+# url = 'https://github.com/WangJiao0811'
+# req = urllib.request.Request(url)
+#req.add_header('User-Agent','Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36')
+# req.add_header('Cookie', cookie )
+# response = urllib.request.urlopen(req)
+# html = response.read().decode('utf-8')
+# print(html)
