@@ -126,7 +126,7 @@ data = {
 result = get_http(url,data,header,None,'gb2312',None)
 rs = Selector(text=result['html']).xpath('//tr/td/text()').extract()
 
-
+# 进行排序
 res1 = []
 res2 = ['学年','学期','课程名称', '成绩']
 i = 0
