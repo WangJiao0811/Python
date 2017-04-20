@@ -121,7 +121,7 @@ data = {
 'ddlXN':XN,
 'ddlXQ':XQ,
 'ddl_kcxz':'',
-'btn_xn':'(unable to decode value)'
+'btn_xq':'(unable to decode value)'
 }
 result = get_http(url,data,header,None,'gb2312',None)
 rs = Selector(text=result['html']).xpath('//tr/td/text()').extract()
