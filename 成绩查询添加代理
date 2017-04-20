@@ -13,6 +13,7 @@ def getcookie_str(cj):
         cookie += ';'
     return cookie
 
+#参数默认值设置  data = None , headers = {} , cookie = None | 1, charset = None , yzm = None | 1
 def get_http(url,data,headers,cookie,charset,yzm):
     # 代理
     proxy = "202.106.16.36:3128"
