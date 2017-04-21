@@ -104,6 +104,8 @@ VIEWSTATE = rs[0]
 
 while True:
     XN = input("请输入所查询的学年（比如 2013-2014） : ")
+    if XN == 'exit':
+        break
     XQ = input("请输入所查询的学期（比如 1） : ")
 
     url = 'http://222.24.62.120/xscjcx.aspx?xh=' + name + '&xm=%D7%A3%CD%D8&gnmkdm=N121605'
