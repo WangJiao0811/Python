@@ -93,7 +93,7 @@ file.close( )
 # data['commit'] = 'Sign in'
 # data['utf8'] = '✓'
 # data['login'] = 'WangJiao0811'
-# data['password'] = '19940811wj'
+# data['password'] = ''
 # data['authenticity_token'] = authenticity_token
 
 # data = urllib.parse.urlencode(data).encode('utf-8')
